@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta description="WhatsApp direct message link generator">
+    <meta keywords="whatsapp link generator">
+    <title>WhatsApp Direct Link</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <style>
+        *{
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+        .box{
+            height: auto;
+            width: 50%;
+            margin: 20% auto;
+            margin-top: 5%;
+            border-radius: 10px;
+            background: lightgray;
+        }
+        .box .box-head{
+            background: gray;
+            padding: 10px;
+            border-radius: 10px 10px 0 0;
+            color: cornsilk;
+        }
+        .box .box-head .box-head-content{
+            margin: 20px;
+        }
+        .box .box-content{
+            height: 200px;
+            padding: 5%;
+        }
+        .box .link-container{
+            height: auto;
+            padding: 5%;
+        }
+        #link{
+            word-wrap: break-word;
+            max-width: 100%;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+        table tr td{
+            text-align: right;
+            padding: 10px;
+        }
+        table{
+            width: 100%;
+        }
+        input{
+            border-radius: 10px;
+            border: solid black 1px;
+            min-height: 30px;
+            width: 100%;
+            padding: 0 0 0 15px;
+        }
+        textarea{
+            height: 60px;
+            padding: 15px 0 0 15px;
+            border-radius: 10px;
+            border: solid black 1px;
+            min-height: 30px;
+            width: 100%;
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+        }
+
+        a{
+            color: rgb(21, 129, 21);
+        }
+
+        /* Firefox */
+        input[type=number] {
+        -moz-appearance: textfield;
+        }
+        button#generate{
+            border: none;
+            border-radius: 5px;
+            background: green;
+            min-height: 40px;
+            min-width: 180px;
+            cursor: pointer;
+            color: white;
+        }
+        button.copy-button{
+            margin: 30px;
+            border: none;
+            border-radius: 5px;
+            background: rgb(37, 119, 226);
+            min-height: 30px;
+            min-width: 80px;
+            cursor: pointer;
+            color: white;
+        }
+
+        /* Popup container */
+        .popup {
+        position: relative;
+        display: inline-block;
+        }
+
+        /* The actual popup (appears on top) */
+        .popup .popuptext {
+        visibility: hidden;
+        width: 160px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 8px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -80px;
+        }
+
+        /* Popup arrow */
+        .popup .popuptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #555 transparent transparent transparent;
+        }
+
+        /* Toggle this class when clicking on the popup container (hide and show the popup) */
+        .popup .show {
+        visibility: visible;
+        -webkit-animation: fadeIn .5s;
+        animation: fadeIn .5s
+        }
+
+        /* Add animation (fade in the popup) */
+        @-webkit-keyframes fadeIn {
+        from {opacity: 0;}
+        to {opacity: 1;}
+        }
+
+        @keyframes fadeIn {
+        from {opacity: 0;}
+        to {opacity:1 ;}
+        }
+
+        @media only screen and (max-width: 700px) {
+            .box{
+                height: auto;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="box">
+            <div class="box-head">
+                <div class="box-head-content">
+                    <h3>Link Generator</h3>
+                </div>
+            </div>
+            <div class="box-content">
+                <div class="form-input">
+                    <table>
+                        <tr>
+                            <td>
+                                WhatsApp Number:
+                            </td>
+                            <td>
+                                <input id="number" type="number" placeholder="with country code">
+                                <span style="font-size: 10px;">eg: 918888877777</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Message:
+                            </td>
+                            <td>
+                                <textarea id="message" placeholder="type your message here"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <button id="generate" onclick="generateLink()">Generate Link</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="link-container">
+                <label for="link">
+                    Link:
+                </label>
+                <a id="link" href=""><p id="link-text"></p></a>
+            </div>
+            <div class="popup">
+                <button class="copy-button" onclick="copyLink()">Copy</button>
+                <span class="popuptext" id="myPopup">Link copied...</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+<script>
+    function generateLink(){
+        var number = document.getElementById("number").value;
+        var message = document.getElementById("message").value;
+        var uri_encoded_message = encodeURIComponent(message);
+        var link = "https://wa.me/"+number+"?text="+uri_encoded_message;
+        var a = document.getElementById("link");
+        a.href = link;
+        document.getElementById("link-text").innerHTML = link;
+    }
+    function copyLink(){
+        const copyText = document.getElementById("link-text").innerText;
+        const el = document.createElement('textarea');
+        el.value = copyText;
+        el.setAttribute('readonly', '');
+        el.style.position = 'absolute';
+        el.style.left = '-9999px';
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        var popup = document.getElementById("myPopup");
+        popup.classList.toggle("show");
+        myVar = setTimeout(fadeOut, 800);
+    }
+    function fadeOut(){
+        var popup = document.getElementById("myPopup");
+        popup.classList.toggle("show");
+    }
+</script>
